@@ -1,0 +1,20 @@
+{
+    "name": "dob/dtag",
+    "description": "Package to work with php and html separately. Create or capture html elements and manipulate them through php",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Diogo Bezerra",
+            "email": "d.bezerra@yahoo.com.br"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+    	"php": ">=5.6.4"
+  	},
+	"autoload": {
+	    "psr-4": {
+	      "Dob\\DTag\\": "packages/dob/dtag/src"
+	},
+}

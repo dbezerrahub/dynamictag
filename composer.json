@@ -1,0 +1,20 @@
+{
+    "name":"dob/dtag",
+    "description": "Cria e manipula tags html através do PHP",
+    "type":"library",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name":"Diogo Bezerra",
+            "email":"diogobezerra5@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Dob\\DynamicTag\\":"src/"
+        }
+    },
+    "require": {
+        "php":">=7.0"
+    }
+}
