@@ -1,0 +1,1 @@
+alert('global_copy');

@@ -1,5 +1,6 @@
 <?php
-use Dob\DinamicTag\DTag;
+namespace Dob\DynamicTag;
+use Dob\DynamicTag\DTag;
 class DImg extends DTag{
 	public function __construct($alt, $src) {
 		parent::__construct('img');

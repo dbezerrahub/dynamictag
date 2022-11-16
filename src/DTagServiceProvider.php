@@ -1,6 +1,6 @@
 <?php
 
-namespace Dob\DTag;
+namespace Dob\DynamicTag;
 
 use Illuminate\Support\ServiceProvider;
 

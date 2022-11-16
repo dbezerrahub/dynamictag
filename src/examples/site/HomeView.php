@@ -1,9 +1,3 @@
-# DTAG
-Cria e manipula tags html através do PHP
-
-## Utilização
-Exemplo
-```php
 <?php
 require __DIR__.'/../../../vendor/autoload.php';
 
@@ -107,7 +101,3 @@ $hv = new HomeView(array());
 $hv->show();
 
 ?>
-
-``` 
-## Requisitos 
-Necessário PHP >= 7.0

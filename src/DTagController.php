@@ -1,5 +1,5 @@
 <?php
-namespace Dob\DTag;
+namespace Dob\DynamicTag;
 
 use App\Http\Controllers\Controller;
 

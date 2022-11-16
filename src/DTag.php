@@ -1,6 +1,8 @@
 <?php
 namespace Dob\DynamicTag;
-# Não está funcionando
+
+use Exception;
+
 class DDate extends DTag {
 	public $input;
 	public function __construct($name, $btimg, $showAno = false, $value = '', $size = '10em') {
@@ -93,7 +95,7 @@ class DForm extends DTag {
 	}
 }
 class DFile extends DTag {
-	public function __construct($name, $img, $label = 'Selecionar Arquivo') {
+	public function __construct($name, $img_path, $label = 'Selecionar Arquivo') {
 		parent::__construct('div');
 		$this->class = 'dfiledivUpload'.$name;
 		$this->setIn("
@@ -102,27 +104,39 @@ class DFile extends DTag {
 				border: 1px #cccccc solid;
 				border-radius: 2px;
 				display: table-cell;
-				font-size: 1.8em;
-				height: 2em;
+				font-size: 1.0em;
+				height: 3.0em;
 				position: relative;
 				overflow: hidden;
 				text-align: center;
 				vertical-align: middle;
-				width: 10em;
-	}
-				.dfiledivUpload$name input.dfile {
+				width: 15em;
+				}
+				#dfiletxtbt$name {
+					position: absolute;
+					top: 30%;
+					left:30%; 
+				}
+				input.dfile {
 				position: absolute;
 				top: 0;
 				right: 0;
 				margin: 0;
 				padding: 0;
-				font-size: 20px;
+				font-size: 14px;
 				cursor: pointer;
 				opacity: 0;
+				height: 100%;
 				filter: alpha(opacity=0);
-	}
+				}
+				#dfileico$name {
+					position: absolute;
+					width:70px;
+					top:0px;
+					left:0px; 
+				}
 				</style>
-				<span><img id='dfileico$name' alt='img' src='$img' /></span>
+				<span><img id='dfileico$name' alt='img' src='$img_path' /></span>
 				<span id='dfiletxtbt$name'>$label</span>
 				<input id='dfileuploadBtn$name' name='$name' type='file' class='dfile' />
 				<script type='text/javascript'>
@@ -215,6 +229,7 @@ class DTable extends DTag {
 	 */
 	function setinTd($tr, $td, $conteudo) {
 		$this->_td[$tr][$td]->setIn($conteudo);
+		//die($this->show());
 	}
 
 	function getTd($tr, $td) {
@@ -285,7 +300,7 @@ class DWysiwyg extends DTag {
 					'outdent' : {name : __('Remove Indent'), command : 'outdent', noActive : true},
 					'hr' : {name : __('Horizontal Rule'), command : 'insertHorizontalRule', noActive : true}
 				},
-				iconsPath : 'dtag/wysiwyg/gif',
+				iconsPath : '/dtag/src/DWysiwyg.gif',
 				buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','fontFormat','indent','outdent','image','upload','link','unlink','forecolor','bgcolor'],
 				iconList : {\"xhtml\":1,\"bgcolor\":2,\"forecolor\":3,\"bold\":4,\"center\":5,\"hr\":6,\"indent\":7,\"italic\":8,\"justify\":9,\"left\":10,\"ol\":11,\"outdent\":12,\"removeformat\":13,\"right\":14,\"save\":25,\"strikethrough\":16,\"subscript\":17,\"superscript\":18,\"ul\":19,\"underline\":20,\"image\":21,\"link\":22,\"unlink\":23,\"close\":24,\"arrow\":26}
 			});
@@ -373,6 +388,10 @@ class DTag {
 			$this->_tagNoSetIn = true;
 		}
 	}
+
+	static function create($tag) {
+		return new DTag($tag);
+	}
 	/**
 	* O CSS pode ser definido através das ids e classes
 	* Container geral (span): #container$name
@@ -448,9 +467,8 @@ class DTag {
 			$this->_array_inner = array();
 		}
 		if(is_object($conteudo)) {
-			if(strpos(get_class($conteudo), 'Dob\DTag') !== false) {
+			if(strpos(get_class($conteudo), 'Dob\DynamicTag') !== false) {
 				$conteudo = "\n".$conteudo->toStr()."\n";
-				//$this->_array_inner[] = $conteudo->toStr();
 			}
 		}
 		
