@@ -1,6 +1,7 @@
 # DTAG
 Cria e manipula tags html através do PHP
 ## Instalação
+Execute o camando abaixo para instalação
 ```shell
 composer require dob/dtag
 ```
