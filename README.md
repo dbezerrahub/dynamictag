@@ -1,6 +1,9 @@
 # DTAG
 Cria e manipula tags html através do PHP
-
+## Instalação
+```shell
+composer require dob/dtag
+```
 ## Utilização
 Exemplo
 ```php
