@@ -83,7 +83,8 @@ public $dirView;
  */
 function __construct($css = true, $js = false, $headers = false, $globalCss = false, $globalJs = false, $title = '') {
     @header('Content-Type: text/html; charset=utf-8');
-    $this->dirView = get_resource_path($this);
+    $this->view_directory = get_resource_path($this);
+    $this->relative_view_directory = str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', get_resource_path($this));
     $this->css = $css;
     $this->js = $js;
     $this->headers = $headers;
@@ -94,41 +95,42 @@ function __construct($css = true, $js = false, $headers = false, $globalCss = fa
     $this->cssLinkFile = '';
     $this->jsLinkFile = '';
     $this->name = get_class($this);
-    if(!file_exists($this->dirView . '/html/' . lcfirst($this->name) . '.html')) {
+
+    if(!file_exists($this->view_directory . '/html/' . lcfirst($this->name) . '.html')) {
         throw new Exception("
-            O Arquivo". lcfirst($this->name).".html não existe para a view ". ucfirst($this->name).".php
-            Verifique se o o arquivo .html correspondente existe no diretório $this->dirView\html"
+            O Arquivo ". lcfirst($this->name).".html não existe para a view ". ucfirst($this->name).".php
+            Verifique se o arquivo .html correspondente existe no diretório $this->view_directory\html"
         , 1);
     }
     if($css == true) {
-        if(!file_exists(lcfirst($this->dirView) . '/css/' . $this->name . '.css')) {
+        if(!file_exists($this->view_directory . '/css/' . lcfirst($this->name) . '.css')) {
         throw new Exception("
-            O Arquivo". lcfirst($this->name).".css não existe para a view ". ucfirst($this->name).".php
-            Verifique se o o arquivo .css correspondente existe no diretório $this->dirView\css"
+            O Arquivo ". lcfirst($this->name).".css não existe para a view ". ucfirst($this->name).".php
+            Verifique se o arquivo .css correspondente existe no diretório $this->view_directory\css"
         , 1);
         } else {
-            $this->cssLinkFile = "<link rel='stylesheet' href = 'css/".lcfirst($this->name).".css'>";
+            $this->cssLinkFile = "<link rel='stylesheet' href = '$this->relative_view_directory/css/".lcfirst($this->name).".css'>";
             if(!$headers) {
-                $this->cssContentFile = file_get_html($this->dirView . '/css/' . $this->name . '.css');
+                $this->cssContentFile = file_get_html($this->relative_view_directory . '/css/' . lcfirst($this->name) . '.css');
             }
         }
     }
     
     if($js == true) {
-        if(!file_exists(lcfirst($this->dirView) . '/js/' . $this->name . '.js')) {
+        if(!file_exists($this->view_directory . '/js/' . lcfirst($this->name) . '.js')) {
         throw new Exception("
-            O Arquivo". lcfirst($this->name).".js não existe para a view ". ucfirst($this->name).".php
-            Verifique se o o arquivo .js correspondente existe no diretório $this->dirView\js"
+            O Arquivo ". lcfirst($this->name).".js não existe para a view ". ucfirst($this->name).".php
+            Verifique se o arquivo .js correspondente existe no diretório $this->view_directory\js"
         , 1);
         } else {
-            $this->jsLinkFile = "<script src='js/".lcfirst($this->name).".js'></script>";
+            $this->jsLinkFile = "<script src='$this->relative_view_directory/js/".lcfirst($this->name).".js'></script>";
             if(!$headers) {
-                $this->jsContentFile = file_get_html($this->dirView . '/js/' . $this->name . '.js');
+                $this->jsContentFile = file_get_html($this->relative_view_directory . '/js/' . lcfirst($this->name) . '.js');
             }
         }
     }
     
-    $this->htmlContentFile = file_get_html($this->dirView . '/html/' . $this->name . '.html');
+    $this->htmlContentFile = file_get_html($this->view_directory . '/html/' . lcfirst($this->name) . '.html');
     
     //$htmlView = $this->htmlContentFile->show();
     //echo $htmlView;
@@ -139,9 +141,12 @@ function __construct($css = true, $js = false, $headers = false, $globalCss = fa
  * Retorna a instância de uma View
  */
 static function view($className, $params = null) {
-    $dirView = searchDirView($className, resource_path() . '/views');
+    //$dirView = searchDirView($className, public_path() . '/views');
+    $dirView = $_SERVER['DOCUMENT_ROOT']. $className . '.php';
     #use
-    include $dirView . '/' . $className . '.php';
+    include $dirView;
+    $className = str_replace('.php', '', substr(strrchr($dirView, '/'), 1));
+//die($className);
     if (is_null($params)) {
         return new $className();
     } else {
@@ -238,15 +243,14 @@ function getPushCss() {
  */
 function getGlobalCss() {
     $return = '';
-    if($this->globalCss) {
-        $dir = __DIR__ . '/global/css';
-        //die($dir);
+    if($this->globalCss != false) {
+        $dir = $this->globalCss;
         $scan = scandir($dir);
         $return = '';
         if($this->headers) {
             foreach($scan as $file) {
                 if (!is_dir($dir."/$file")) {
-                    $return .= "<link rel='stylesheet' href='/dtag/src/global/css/$file'>\n";
+                    $return .= "<link rel='stylesheet' href='$dir/$file'>\n";
                 }
             }
         } else {
@@ -257,7 +261,6 @@ function getGlobalCss() {
                     $globalCssContentFile->clear();
                 }
             }
-            
         }
     }
     return $return;
@@ -312,15 +315,15 @@ function getPushJs() {
  */
 function getGlobalJs() {
     $return = '';
-    if($this->globalJs) {
-        $dir = __DIR__ . '/global/js';
+    if($this->globalJs != false) {
+        $dir = $this->globalJs;
         $scan = scandir($dir);
         $return = '';
         
         if($this->headers) {
             foreach($scan as $file) {
                 if (!is_dir($dir."/$file")) {
-                    $return .= "<script src='/dtag/src/global/js/$file'></script>\n";
+                    $return .= "<script src='$dir/$file'></script>\n";
                 }
             }
         } else {
