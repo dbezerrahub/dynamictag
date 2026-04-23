@@ -1,5 +1,6 @@
 # DTAG
 Cria e manipula tags html através do PHP
+Projeto de framework para estudos
 ## Instalação
 Execute o camando abaixo para instalação
 ```shell
